@@ -1,6 +1,25 @@
 <template>
   <div>
     <p class="decode-result">Last result: <b>{{ result }}</b></p>
+      <hr>
+      <h1>sistema de recepcion de material electorial</h1>
+      <h2> {{ result }} </h2>
+      <input type="text" name="" v-model="result">
+      <button v-if="result != null" @click="buscar()"> Buscar</button>
+        <ul v-if="ver">
+          <li v-for="item in FiltroDato" :key="item.id">
+            {{item.nombre}} - <span>{{item.Anforas}}</span> - (<span>{{item.Mesas}}</span>) - 
+        
+              <span v-if="item.giganto == true">
+                [si]
+              </span >
+              <span v-else>
+                [no]
+              </span>
+
+          </li>
+        </ul>
+  <hr>
 
     <qrcode-stream :camera="camera" @decode="onDecode" @init="onInit">
       <div v-if="validationSuccess" class="validation-success">
@@ -30,6 +49,14 @@ export default {
       isValid: undefined,
       camera: 'auto',
       result: null,
+      ver:false,
+      centroCopio:[
+        {id:'130927',nombre:"Glorioso San Carlos", Anforas:15, Mesas:10, giganto:true, obser:""},
+        {id:'140927',nombre:"Maria Auxiliadora", Anforas:25, Mesas:15, giganto:true, obser:""},
+        {id:'150927',nombre:"Gran Unidad Escolar San Carlos", Anforas:20, Mesas:15, giganto:true, obser:""},
+        {id:'160927',nombre:"IEP 32", Anforas:10, Mesas:5, giganto:true, obser:""},
+        {id:'170927',nombre:"70011 Mañanazo", Anforas:5, Mesas:1, giganto:false, obser:""},
+      ]
     }
   },
 
@@ -45,6 +72,9 @@ export default {
 
     validationFailure () {
       return this.isValid === false
+    },
+    FiltroDato(){
+      return this.centroCopio.filter((item)=> item.id.includes(this.result));
     }
   },
 
@@ -86,6 +116,10 @@ export default {
       return new Promise(resolve => {
         window.setTimeout(resolve, ms)
       })
+    },
+    buscar(){
+      
+      this.ver = true
     }
   }
 }
